@@ -1,7 +1,8 @@
-import openai
+from openai import OpenAI
 import json
 import time
 from telethon import TelegramClient, events
+import os
 
 global gpt_key
 global prompt
@@ -11,6 +12,7 @@ global litecoin
 global ethereum
 global api_id
 global api_hash
+
 
 
 def load_config():
@@ -43,7 +45,7 @@ def chat_with_gpt3(session, prompt, model="gpt-3.5-turbo-16k-0613", max_tokens=1
         session.append({"role": "user", "content": prompt})
         
         # Generate a response based on the updated session
-        response = openai.ChatCompletion.create(
+        response = api_client.chat.completions.create(
             model=model,
             messages=session,
             max_tokens=max_tokens
@@ -90,7 +92,11 @@ def save_session(user_id, sessiondata):
 
 load_config()
 
-openai.api_key = gpt_key
+api_key = gpt_key
+
+api_client = OpenAI(
+    api_key=api_key,
+)
 
 client = TelegramClient('auto_respoder', api_id, api_hash)
 
